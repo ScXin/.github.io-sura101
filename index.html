@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端调用后端接口示例</title>
+    <script>
+        async function fetchData() {
+            // 获取输入框的值
+            var userInput = document.getElementById('inputField').value;
+            // 后端接口URL，需要替换为你实际的接口地址
+            var apiUrl = 'https://ms-fc-capp-func-amqwvbkcjx.cn-shanghai.fcapp.run/invoke';
+
+            try {
+                const raw = JSON.stringify({
+                    "input": {
+                        "text": userInput
+                    },
+                    "parameters": {}
+                });
+                // 发起POST请求
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // 根据接口要求调整Content-Type
+                    },
+                    body: raw, // 将输入的值作为请求体发送
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json(); // 解析返回的JSON数据
+                // 显示返回的数据
+                document.getElementById('resultBox').innerText = JSON.stringify(data, null, 2); // 格式化显示
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('resultBox').innerText = '请求出错，请检查控制台日志。';
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>前端调用后端接口示例</h1>
+
+    <div>
+        <label for="inputField">输入查询内容:</label>
+        <input type="text" id="inputField">
+        <button onclick="fetchData()">提交查询</button>
+    </div>
+
+    <pre id="resultBox">返回数据将显示在这里...</pre>
+
+</body>
+
+</html>
